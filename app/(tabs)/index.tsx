@@ -5,19 +5,45 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
-import { LegendList } from "@legendapp/list";
+import { LegendList, LegendListRenderItemProps } from "@legendapp/list";
 
 const fakeData = Array.from({ length: 100 }, (_, index) => ({
   id: index,
   title: `Item ${index + 1}`,
 }));
 
+const Item = ({ item }: { item: { title: string; score: number } }) => {
+  console.log("item", item);
+  return (
+    <View
+      style={{
+        height: 100,
+        backgroundColor: "#fefefe",
+        justifyContent: "center",
+        paddingHorizontal: 24,
+        borderRadius: 16,
+      }}
+    >
+      <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+        {`${item.title} - Score:${item.score}`}
+      </Text>
+    </View>
+  );
+};
+
 export default function HomeScreen() {
   const [count, setCount] = useState(0);
   const dataWithCount = fakeData.map((item, index) => ({
     ...item,
-    score: index * count,
+    score: index === 0 ? count : 0,
   }));
+
+  const renderItem = ({
+    item,
+  }: LegendListRenderItemProps<{
+    title: string;
+    score: number;
+  }>) => <Item item={item} />;
   return (
     <View style={{ flex: 1, paddingHorizontal: 16, marginTop: 70 }}>
       <Text style={{ fontSize: 34, fontWeight: "bold" }}>
@@ -28,21 +54,7 @@ export default function HomeScreen() {
         data={dataWithCount}
         estimatedItemSize={116}
         ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-        renderItem={({ item, index }) => (
-          <View
-            style={{
-              height: 100,
-              backgroundColor: "#fefefe",
-              justifyContent: "center",
-              paddingHorizontal: 24,
-              borderRadius: 16,
-            }}
-          >
-            <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-              {`${item.title} - Score:${index * item.score}`}
-            </Text>
-          </View>
-        )}
+        renderItem={renderItem}
       />
     </View>
   );
