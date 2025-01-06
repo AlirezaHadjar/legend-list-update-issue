@@ -12,11 +12,11 @@ import { ReText } from "react-native-redash";
 const fakeData = Array.from({ length: 100 }, (_, index) => ({
   id: index,
   title: `Item ${index + 1}`,
+  score: 0,
 }));
 
 const ListItem = ({
   item,
-  index,
   animatedScores,
 }: {
   item: { id: number; title: string; score: number };
@@ -47,13 +47,18 @@ const ListItem = ({
   );
 };
 
-export default function HomeScreen() {
+export default function Workaround() {
   const [count, setCount] = useState(0);
 
-  const dataWithCount = fakeData.map((item, index) => ({
-    ...item,
-    score: index * count,
-  }));
+  const dataWithCount = fakeData.map((item, index) => {
+    if (index === 0) {
+      return {
+        ...item,
+        score: count,
+      };
+    }
+    return item;
+  });
 
   const animatedScores = useDerivedValue(() => {
     return dataWithCount.map((item) => ({ id: item.id, score: item.score }));
@@ -61,11 +66,14 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1, paddingHorizontal: 16, marginTop: 70 }}>
-      <Text style={{ fontSize: 34, fontWeight: "bold" }}>Working example</Text>
+      <Text style={{ fontSize: 34, fontWeight: "bold" }}>
+        Workaround example
+      </Text>
       <Button title="Increment" onPress={() => setCount(count + 1)} />
       <LegendList
         data={dataWithCount}
         estimatedItemSize={116}
+        keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
         renderItem={({ item, index }) => (
           <ListItem animatedScores={animatedScores} item={item} index={index} />

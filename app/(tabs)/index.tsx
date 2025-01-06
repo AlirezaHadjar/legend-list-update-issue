@@ -10,6 +10,7 @@ import { LegendList, LegendListRenderItemProps } from "@legendapp/list";
 const fakeData = Array.from({ length: 100 }, (_, index) => ({
   id: index,
   title: `Item ${index + 1}`,
+  score: 0,
 }));
 
 const Item = ({ item }: { item: { title: string; score: number } }) => {
@@ -31,12 +32,17 @@ const Item = ({ item }: { item: { title: string; score: number } }) => {
   );
 };
 
-export default function HomeScreen() {
+export default function NotWorking() {
   const [count, setCount] = useState(0);
-  const dataWithCount = fakeData.map((item, index) => ({
-    ...item,
-    score: index === 0 ? count : 0,
-  }));
+  const dataWithCount = fakeData.map((item, index) => {
+    if (index === 0) {
+      return {
+        ...item,
+        score: count,
+      };
+    }
+    return item;
+  });
 
   const renderItem = ({
     item,
@@ -53,6 +59,9 @@ export default function HomeScreen() {
       <LegendList
         data={dataWithCount}
         estimatedItemSize={116}
+        // Note: keyExtractor should be removed in order to see the list updates
+        // but removing it causes a flicker when update happens
+        keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
         renderItem={renderItem}
       />
