@@ -59,11 +59,10 @@ export default function NotWorking() {
       <LegendList
         data={dataWithCount}
         estimatedItemSize={116}
-        // Note: keyExtractor should be removed in order to see the list updates
-        // but removing it causes a flicker when update happens
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => `${item.id.toString()}`}
         ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
         renderItem={renderItem}
+        recycleItems
       />
     </View>
   );
